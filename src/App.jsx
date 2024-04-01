@@ -10,17 +10,18 @@ import { ColorType, createChart } from 'lightweight-charts';
 function App() {
   const [count, setCount] = useState(0)
   const host = import.meta.env.VITE_APP_SOCKET_URL || 'http://localhost:5500'
+  const [areaSeries, setAreaSeries] = useState(null);
   const [dataChart, setDataChart] = useState([
-    { time: '2018-12-22', value: 32.51 },
-    { time: '2018-12-23', value: 31.11 },
-    { time: '2018-12-24', value: 27.02 },
-    { time: '2018-12-25', value: 27.32 },
-    { time: '2018-12-26', value: 25.17 },
-    { time: '2018-12-27', value: 28.89 },
-    { time: '2018-12-28', value: 25.46 },
-    { time: '2018-12-29', value: 23.92 },
-    { time: '2018-12-30', value: 22.68 },
-    { time: '2018-12-31', value: 22.67 },
+    // { time: '2018-12-22', value: 32.51 },
+    // { time: '2018-12-23', value: 31.11 },
+    // { time: '2018-12-24', value: 27.02 },
+    // { time: '2018-12-25', value: 27.32 },
+    // { time: '2018-12-26', value: 25.17 },
+    // { time: '2018-12-27', value: 28.89 },
+    // { time: '2018-12-28', value: 25.46 },
+    // { time: '2018-12-29', value: 23.92 },
+    // { time: '2018-12-30', value: 22.68 },
+    // { time: '2018-12-31', value: 22.67 },
     // open: 109.87, high: 114.69, low: 85.66, close: 111.26
   ]);
 
@@ -47,15 +48,22 @@ function App() {
       },
     });
     const areaSeries = chart.addAreaSeries({ lineColor: '#2962FF', topColor: '#2962FF', bottomColor: 'rgba(41, 98, 255, 0.28)' });
+    setAreaSeries(areaSeries);
+    // get data chart
 
-    areaSeries.setData(dataChart);
-    chart.timeScale().fitContent();
+    // chart.timeScale().fitContent();
     socketRef.current.on('data', (data) => {
       console.log(data);
-      areaSeries.setData([
-        ...dataChart,
-        ...data
-      ]);
+      // areaSeries.setData([
+      //   ...dataChart,
+      //   ...data
+      // ]);
+      setDataChart(prew => {
+        return [
+          ...prew,
+          ...data
+        ]
+      });
       // chart.timeScale().fitContent();
     });
 
@@ -68,6 +76,14 @@ function App() {
       chart.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (areaSeries && dataChart.length > 0) {
+      areaSeries.setData(dataChart);
+    }
+  }, [dataChart, areaSeries]);
+
+
 
   return (
     <>
