@@ -28,9 +28,7 @@ function App() {
   const socketRef = useRef();
   const chartContainer = useRef();
   const chartOptions = {
-    layout: {
-      textColor: 'white', background: { type: 'solid', color: 'transparent', },
-    }
+    
   };
 
 
@@ -39,19 +37,43 @@ function App() {
     const chart = createChart(chartContainer.current, {
       width: 800,
       height: 400,
-      ...chartOptions,
+      layout: {
+        textColor: '#333', background: { type: 'solid', color: 'transparent', },
+      },
       rightPriceScale: {
         visible: false,
       },
       leftPriceScale: {
         visible: true,
+        scaleMargins: {
+          top: 0.2,
+          bottom: 0.2,
+        },
+        borderVisible: false,
+      },
+      timeScale: {
+        secondsVisible: true,
+        timeVisible: true,
+      },
+      grid: {
+        horzLines: {
+          color: '#eee',
+        },
+        vertLines: {
+          color: '#ffffff',
+        },
       },
     });
-    const areaSeries = chart.addAreaSeries({ lineColor: '#2962FF', topColor: '#2962FF', bottomColor: 'rgba(41, 98, 255, 0.28)' });
-    setAreaSeries(areaSeries);
-    // get data chart
 
-    // chart.timeScale().fitContent();
+    const areaSeries = chart.addAreaSeries({
+      topColor: 'rgba(255, 82, 82, 0.56)',
+      bottomColor: 'rgba(255, 82, 82, 0.04)',
+      lineColor: 'rgba(255, 82, 82, 1)',
+      lineWidth: 2,
+      symbol: 'AAPL',
+    });
+    setAreaSeries(areaSeries);
+
     socketRef.current.on('data', (data) => {
       console.log(data);
       // areaSeries.setData([
@@ -64,7 +86,7 @@ function App() {
           ...data
         ]
       });
-      // chart.timeScale().fitContent();
+
     });
 
     socketRef.current.on('disconnect', () => {
